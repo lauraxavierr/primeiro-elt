@@ -4,8 +4,6 @@ import json
 
 class TwitterHook(HttpHook):
 
-# O que é pass, init e self
-
     def __init__(self, query, conn_id=None, start_time=None, end_time=None):
         self.query = query
         self.conn_id = conn_id or "twitter_default" #caso não receba, irá considerar o TW
@@ -15,9 +13,8 @@ class TwitterHook(HttpHook):
 
     def create_url(self):
         query = self.query
-        tweet_fields = "tweet.fields=author_id,conversation_id,created_at,in_reply_to_user_id,public_metrics,text"
+        tweet_fields = "tweet.fields=author_id,conversation_id,created_at,id,in_reply_to_user_id,public_metrics,text"
         user_fields = "expansions=author_id&user.fields=id,name,username,created_at"
-        filters = f"start_time=2022-01-26T00:00:00.00Z&end_time=2022-01-27T00:00:00.00Z"
         start_time = (
             f"&start_time={self.start_time}"
             if self.start_time
@@ -34,11 +31,11 @@ class TwitterHook(HttpHook):
         return url
 
     def connect_to_endpoint(self, url, session):
-        response = requests.request("GET", url)
+        response = requests.Request("GET", url)
         prep = session.prepare_request(response)
         self.log.info(f"URL: {url}")
-        return self.run_and_click(session, prep, {}).json()
-        
+        return self.run_and_check(session, prep, {}).json()
+
 
     def paginate(self, url, session, next_token=""):
         if next_token:
@@ -61,3 +58,4 @@ class TwitterHook(HttpHook):
 if __name__ == "__main__":
     for page in TwitterHook("AluraOnline").run():
         print(json.dumps(page, indent=4, sort_keys=True))
+        
