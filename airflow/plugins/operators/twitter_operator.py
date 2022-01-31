@@ -1,11 +1,13 @@
 from airflow.models import BaseOperator, DAG, TaskInstance
-from hooks.twitter_hook import TwitterHook
+from airflow.utils.decorators import apply_defaults
+from hook.twitter_hook import TwitterHook
 
 from datetime import datetime
 import json
 
 class TwitterOperator(BaseOperator):
 
+    @apply_defaults
     def __init__(
         self,
         query, 
@@ -14,11 +16,11 @@ class TwitterOperator(BaseOperator):
         end_time = None,
         *args, **kwargs
     ):
-        super.__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.query = query,
         self.conn_id = conn_id,
         self.start_time = start_time,
-        self.end_date = end_time
+        self.end_time = end_time
 
     def execute(self, context):
         hook = TwitterHook(

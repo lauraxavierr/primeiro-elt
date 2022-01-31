@@ -4,29 +4,20 @@ import json
 
 class TwitterHook(HttpHook):
 
-    def __init__(self, query, conn_id = None, start_time = None, end_time = None):
+    def __init__(self, query, conn_id= None, start_time = None, end_time = None):
         self.query = query
-        self.conn_id = conn_id
+        self.conn_id = "twitter_laura"
         self.start_time = start_time
         self.end_time = end_time
         super().__init__(http_conn_id=self.conn_id)
 
     def create_url(self):
-        query = self.query
-        tweet_fields = "tweet.fields=author_id,conversation_id,created_at,id,in_reply_to_user_id,public_metrics,text"
+        query = "AluraOnline"
+        tweet_fields = "tweet.fields=author_id,conversation_id,created_at,in_reply_to_user_id,public_metrics,text"
         user_fields = "expansions=author_id&user.fields=id,name,username,created_at"
-        start_time = (
-            f"&start_time={self.start_time}"
-            if self.start_time
-            else ""
-        )
-        end_time = (
-            f"&end_time={self.end_time}"
-            if self.end_time
-            else ""
-        )
-        url = "{}/2/tweets/search/recent?query={}&{}&{}{}{}".format(
-            self.base_url, query, tweet_fields, user_fields, start_time, end_time
+        dts = "start_time=2022-01-26T00:00:00.00Z&end_time=2022-01-27T00:00:00.00Z"
+        url = "{}/2/tweets/search/recent?query={}&{}&{}&{}".format(
+            self.base_url, query, tweet_fields, user_fields, dts
         )
         return url
 
